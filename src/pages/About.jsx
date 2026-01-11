@@ -4,7 +4,7 @@ import aboutSmallImage from "../assets/AboutUsSmallImage.png";
 
 function About() {
   return (
-    <main>
+    <main className="mb-8">
       {/* BANNER */}
       <section className="pt-12">
         <img src={bannerImage} alt="NoxBanner" />

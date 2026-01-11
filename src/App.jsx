@@ -15,6 +15,7 @@ import NoxWatch from "./pages/NoxWatch.jsx";
 import Signup from "./pages/Signup.jsx";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
+import ProductDetail from "./pages/ProductDetail.jsx";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/noxView" element={<NoxView />}></Route>
         <Route path="/noxWatch" element={<NoxWatch />}></Route>
         <Route path="/signup" element={<Signup />}></Route>
+        <Route path="/product-detail/:id" element={<ProductDetail />}></Route>
       </Routes>
       <Header />
 

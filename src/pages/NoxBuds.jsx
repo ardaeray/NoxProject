@@ -23,7 +23,7 @@ function NoxBuds() {
   }, []);
 
   return (
-    <main>
+    <main className="mb-5">
       {/* BANNER */}
       <section className="pt-12">
         <img src={bannerImage} alt="NoxBudsBanner" />
