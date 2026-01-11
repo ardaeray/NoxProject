@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function Login() {
-  return (
-    <div>Login</div>
-  )
+  return <div class="pt-16">Login</div>;
 }
 
-export default Login
+export default Login;

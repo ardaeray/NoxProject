@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function NoxPhone() {
-  return (
-    <div>NoxPhone</div>
-  )
+  return <div class="pt-16">NoxPhone</div>;
 }
 
-export default NoxPhone
+export default NoxPhone;

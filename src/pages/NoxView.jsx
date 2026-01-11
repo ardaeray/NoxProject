@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function NoxView() {
-  return (
-    <div>NoxView</div>
-  )
+  return <div class="pt-16">NoxView</div>;
 }
 
-export default NoxView
+export default NoxView;

@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function NoxBuds() {
-  return (
-    <div>NoxBuds</div>
-  )
+  return <div class="pt-16">NoxBuds</div>;
 }
 
-export default NoxBuds
+export default NoxBuds;

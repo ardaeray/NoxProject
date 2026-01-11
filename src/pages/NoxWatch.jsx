@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function NoxWatch() {
-  return (
-    <div>NoxWatch</div>
-  )
+  return <div class="pt-16">NoxWatch</div>;
 }
 
-export default NoxWatch
+export default NoxWatch;
