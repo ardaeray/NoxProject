@@ -1,79 +1,141 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext } from "react";
 import CartProduct from "../components/CartProduct";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+
 
 function Cart() {
+  const { state } = useContext(AppContext);
 
   const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/cart");
-        const data = await response.json();
+  const fetchItems = async () => {
+    try {
+      if (!state.user) return;
 
-        const gettingItems = data.filter((item) => item);
+      const response = await fetch(
+        `http://localhost:3001/users/${state.user.id}`
+      );
+      const data = await response.json();
 
-        setItems(gettingItems);
-      } catch (error) {
-        console.log("Data error:", error);
-      }
-    };
+      setItems(data.cart || []);
+    } catch (error) {
+      console.log("Data error:", error);
+    }
+  };
 
-    fetchItems();
-  }, []);
+  fetchItems();
+}, [state.user]);
+
 
   const handleIncrease = async (item) => {
-    const updatedItem = { ...item, quantity: item.quantity + 1 };
+  try {
+    // user'ı çek
+    const res = await fetch(
+      `http://localhost:3001/users/${state.user.id}`
+    );
+    const user = await res.json();
 
-    try {
-      await fetch(`http://localhost:3001/cart/${item.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ quantity: updatedItem.quantity }),
-      });
+    // cart içinden quantity artır (❗ productId ile)
+    const updatedCart = user.cart.map((cartItem) =>
+      cartItem.productId === item.productId
+        ? { ...cartItem, quantity: cartItem.quantity + 1 }
+        : cartItem
+    );
 
-      setItems((prev) => prev.map((x) => (x.id === item.id ? updatedItem : x)));
-    } catch (error) {
-      console.error("Increase error:", error);
-    }
-  };
+    // user'ı PATCH et
+    await fetch(`http://localhost:3001/users/${state.user.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cart: updatedCart,
+      }),
+    });
 
-  const handleDecrease = async (item) => {
-    if (item.quantity === 1) return;
+    // UI güncelle
+    setItems(updatedCart);
 
-    const updatedItem = { ...item, quantity: item.quantity - 1 };
+  } catch (error) {
+    console.error("Increase error:", error);
+  }
+};
 
-    try {
-      await fetch(`http://localhost:3001/cart/${item.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ quantity: updatedItem.quantity }),
-      });
 
-      setItems((prev) => prev.map((x) => (x.id === item.id ? updatedItem : x)));
-    } catch (error) {
-      console.error("Decrease error:", error);
-    }
-  };
+const handleDecrease = async (item) => {
+  if (item.quantity === 1) return;
+
+  try {
+    // user'ı çek
+    const res = await fetch(
+      `http://localhost:3001/users/${state.user.id}`
+    );
+    const user = await res.json();
+
+    // cart içinden quantity azalt (❗ productId ile)
+    const updatedCart = user.cart.map((cartItem) =>
+      cartItem.productId === item.productId
+        ? { ...cartItem, quantity: cartItem.quantity - 1 }
+        : cartItem
+    );
+
+    // user'ı PATCH et
+    await fetch(`http://localhost:3001/users/${state.user.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cart: updatedCart,
+      }),
+    });
+
+    // UI güncelle
+    setItems(updatedCart);
+
+  } catch (error) {
+    console.error("Decrease error:", error);
+  }
+};
+
+
 
   const handleRemove = async (item) => {
-    try {
-      await fetch(`http://localhost:3001/cart/${item.id}`, {
-        method: "DELETE",
-      });
+  try {
+    // user'ı çek
+    const res = await fetch(
+      `http://localhost:3001/users/${state.user.id}`
+    );
+    const user = await res.json();
 
-      setItems((prev) => prev.filter((x) => x.id !== item.id));
-    } catch (error) {
-      console.error("Delete error:", error);
-    }
-  };
+    // cart içinden sil (❗ productId ile)
+    const updatedCart = user.cart.filter(
+      (cartItem) => cartItem.productId !== item.productId
+    );
+
+    // user'ı PATCH et
+    await fetch(`http://localhost:3001/users/${state.user.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cart: updatedCart,
+      }),
+    });
+
+    // UI güncelle
+    setItems(updatedCart);
+
+  } catch (error) {
+    console.error("Delete error:", error);
+  }
+};
+
 
   return (
     <main className="bg-white min-h-screen">
@@ -98,7 +160,7 @@ function Cart() {
               <div className="flex flex-col gap-4">
                 {items.map((item) => (
                   <CartProduct
-                    key={item.id}
+                     key={item.productId}
                     item={item}
                     onIncrease={handleIncrease}
                     onDecrease={handleDecrease}

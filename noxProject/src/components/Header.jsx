@@ -1,20 +1,40 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import noxLogo from "../../public/assets/noxLogoTransparent.png";
 import { useState } from "react";
+import { AppContext } from "../context/AppContext";
 
 function Header() {
+  const { state,dispatch } = useContext(AppContext);
+  
+
+  const[logOut,setLogOut] = useState(false);
+
+ let checkLogOut  = () => {
+        dispatch({
+        type: "LOGIN",
+        payload: {
+             user: null,
+             cart: [],
+             favourites: [],
+             isAuth: false,
+        },
+    });
+  }
+
   const menuItems = [
+
     { label: "📱 NoxPhone", to: "/noxPhone" },
     { label: "💻 NoxBook", to: "/noxBook" },
     { label: "⌚️ NoxWatch", to: "/noxWatch" },
     { label: "🎧 NoxBuds", to: "/noxBuds" },
     { label: "🖥️ NoxView", to: "/noxView" },
     { label: "About Us", to: "/about" },
-    { label: "👜 Cart", to: "/cart" },
-    { label: "❤️ Favourites", to: "/favourites" },
-    { label: "Log In", to: "/login" },
-    { label: "Sign Up", to: "/signup" },
+   state.isAuth && { label: "👜 Cart", to: "/cart" },
+   state.isAuth && { label: "❤️ Favourites", to: "/favourites" },
+   !state.isAuth && { label: "Log In", to: "/login" },
+   state.isAuth && { label: "Log Out", to: "#" },
+  !state.isAuth && { label: "Sign Up", to: "/signup" },
   ];
 
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -22,9 +42,9 @@ function Header() {
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-black">
       <nav className="mx-auto max-w-7xl px-6">
-        <ul className="relative flex h-12 items-center text-sm">
+        <ul className="grid grid-cols-[auto_1fr_auto] h-12 items-center text-sm">
           {/* Top Left Logo */}
-          <li className="flex items-center">
+          <li className="flex items-center shrink-0">
             <Link to="/">
               <img
                 src={noxLogo}
@@ -37,11 +57,7 @@ function Header() {
           {/* Middle Navbar Links */}
           <li
             className="
-            hidden md:flex 
-            gap-6 
-            absolute left-1/2 -translate-x-1/2
-            whitespace-nowrap
-          "
+              hidden lg:flex justify-center gap-3 lg:gap-6 whitespace-nowrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {menuItems.map((item) => (
               <Link
@@ -56,7 +72,7 @@ function Header() {
 
           {/* Hamburger Button For Mobile */}
           <button
-            className="ml-auto md:hidden text-white text-xl"
+            className="lg:hidden col-start-3 justify-self-end text-white text-xl"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             ☰
@@ -64,7 +80,7 @@ function Header() {
         </ul>
       </nav>
       {mobileOpen && (
-        <div className="md:hidden bg-black border-t border-gray-800">
+        <div className="lg:hidden bg-black border-t border-gray-800">
           <ul className="flex flex-col px-6 py-4 gap-4">
             {menuItems.map((item) => (
               <Link
@@ -72,6 +88,7 @@ function Header() {
                 to={item.to}
                 onClick={() => setMobileOpen(false)}
                 className="text-white hover:text-gray-400 transition-colors"
+                onDoubleClick = {() => checkLogOut}
               >
                 {item.label}
               </Link>

@@ -11,9 +11,6 @@ function ProductDetail() {
   const { id } = useParams();   // useNavigate ile route a yolladım route da id değişkeni ile (/:id) id sini parametre olarak aldım.useParams ile de bu değişkeni product detail içine aldım.
 
 
-  //const [addedCart, setAddedCart] = useState(false); // add to Cart butonunun click olmasını kontrol ediyor
-  //const [addedCartRed, setAddedCartRed] = useState(false); // add to Fav  butonunun  click olduktan sonra veritabanına yazamadığında kontrol ediyor
-
   const [product, setProduct] = useState(null);
 
   const navigate = useNavigate(); // eğer id si olmayan ürün olursa NotFoun404 sayfasına gitmek için.

@@ -1,5 +1,60 @@
 {
-  "users": [],
+  "users": [
+    {
+      "id": "1286",
+      "mail": "emre@gmail.com",
+      "password": "231",
+      "isAuth": false,
+      "cart": [
+        {
+          "productId": 7,
+          "productName": "NOX Time",
+          "productPrice": 399,
+          "productImg": "../../public/assets/NoxTime.png",
+          "quantity": 11
+        }
+      ],
+      "favourites": []
+    },
+    {
+      "id": "7c5f",
+      "mail": "arda@gmail.com",
+      "password": "231",
+      "isAuth": false,
+      "cart": [
+        {
+          "productId": 1,
+          "productName": "NOX Book",
+          "productPrice": 1299,
+          "productImg": "../../public/assets/NoxBook.png",
+          "quantity": 6
+        },
+        {
+          "productId": 4,
+          "productName": "NOX One",
+          "productPrice": 899,
+          "productImg": "../../public/assets/NoxOne.png",
+          "quantity": 6
+        },
+        {
+          "productId": 6,
+          "productName": "NOX One Mini",
+          "productPrice": 749,
+          "productImg": "../../public/assets/NoxOneMini.png",
+          "quantity": 4
+        }
+      ],
+      "favourites": []
+    },
+    {
+      "id": "08e6",
+      "mail": "a@mm.com",
+      "password": "1",
+      "isAuth": false,
+      "cart": [],
+      "favourites": []
+    }
+  ],
   "products": [
     {
       "productId": 1,
@@ -248,7 +303,5 @@
       "id": "f8b1",
       "productImg": "../../public/assets/NoxViewEdge.png"
     }
-  ],
-  "cart": [],
-  "favourites": []
+  ]
 }

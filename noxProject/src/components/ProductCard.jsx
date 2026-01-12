@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAdd from "../hooks/useAdd";
+import { AppContext } from "../context/AppContext";
 
 
 
@@ -8,6 +9,8 @@ import useAdd from "../hooks/useAdd";
 
 
 function ProductCard({ product }) {
+  const { state } = useContext(AppContext);
+
 
   const { addToCart, addedCartRed, addedCart } = useAdd();
 
@@ -17,43 +20,60 @@ function ProductCard({ product }) {
 
   const navigate = useNavigate(); // productDetail sayfasına giderken id kısmını da göndermek için
 
- 
+const addToFavourites = async (product) => {
+  if (!state.isAuth) {
+    navigate("/login");
+    return;
+  }
 
-
- 
-
-
- const addToFavourites = async (product) => {
   try {
-    const res = await fetch("http://localhost:3001/favourites");
-    const data = await res.json();
+    // user'ı çek
+    const res = await fetch(
+      `http://localhost:3001/users/${state.user.id}`
+    );
+    const user = await res.json();
 
-    const exists = data.some( (fav) => Number(fav.productId) === Number(product.productId) // içerisinde varsa true döndürüyorlar unique olup olmama kontrol ediliyor
+    const exists = user.favourites.some(
+      (fav) => Number(fav.productId) === Number(product.productId)
     );
 
-    if (exists) {                                                // içerisinde varsa bu blok çalışıyor.
-       setAddedFavRed(true);                                     // buton kırmızı oluyor.
-       setTimeout(() => setAddedFavRed(false),1000);             // 1 saniye boyunca
-       return(
-        setTimeout(() => {navigate("/favourites");}, 1000)
-       )
-                                                        // return ediyor ve geri kalan kodu çalıştırmıyor.
+    if (exists) {
+      setAddedFavRed(true);
+      setTimeout(() => setAddedFavRed(false), 1000);
+      setTimeout(() => navigate("/favourites"), 1000);
+      return;
     }
 
+    const updatedFavourites = [
+      ...user.favourites,
+      {
+        productId: product.productId,
+        productName: product.productName,
+        productPrice: product.productPrice,
+        productImg: product.productImg,
+        quantity: 1,
+      },
+    ];
 
-    await fetch("http://localhost:3001/favourites", {                  
-      method: "POST",                               
+    // user'ı PATCH et
+    await fetch(`http://localhost:3001/users/${state.user.id}`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product),                             // product card ın içerisinde aldığımız {product} parametresini burada servera yazdırıyoruz.
+      body: JSON.stringify({
+        favourites: updatedFavourites,
+      }),
     });
 
-    setAddedFav(true);                                             // buton yeşil oluyor.
-    setTimeout(() => setAddedFav(false),1000);                     // 1 saniye boyunca
+    setAddedFav(true);
+    setTimeout(() => setAddedFav(false), 1000);
 
   } catch (error) {
     console.error("Add to favourites error:", error);
   }
 };
+
+
+
   return (
     <div className="group border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 w-full max-w-[550px]">
       <div className="flex items-stretch">

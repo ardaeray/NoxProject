@@ -1,42 +1,66 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import CartProduct from "../components/CartProduct";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 
 function Favourites() {
-
+  
   const navigate = useNavigate();
+  const { state } = useContext(AppContext);
 
+  // ✅ EKSİK OLAN STATE
   const [items, setItems] = useState([]);
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await fetch("http://localhost:3001/favourites");
-        const data = await response.json();
+        if (!state.isAuth) {
+          navigate("/login");
+          return;
+        }
 
-        const gettingItems = data.filter((item) => item);
+        const response = await fetch(
+          `http://localhost:3001/users/${state.user.id}` // ✅ userId değil
+        );
+        const user = await response.json();
 
-        setItems(gettingItems);
+        setItems(user.favourites || []);
       } catch (error) {
         console.log("Data error:", error);
       }
     };
 
     fetchItems();
-  }, []);
+  }, [state.user, state.isAuth, navigate]); // ✅ doğru dependency
 
   const handleRemove = async (item) => {
     try {
-      await fetch(`http://localhost:3001/favourites/${item.id}`, {
-        method: "DELETE",
+      const res = await fetch(
+        `http://localhost:3001/users/${state.user.id}`
+      );
+      const user = await res.json();
+
+      const updatedFavourites = user.favourites.filter(
+        (fav) => fav.productId !== item.productId
+      );
+
+      await fetch(`http://localhost:3001/users/${state.user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          favourites: updatedFavourites,
+        }),
       });
 
-      setItems((prev) => prev.filter((x) => x.id !== item.id));
+      setItems((prev) =>
+        prev.filter((x) => x.productId !== item.productId)
+      );
     } catch (error) {
       console.error("Delete error:", error);
     }
   };
-
 
   return (
     <main className="bg-white min-h-screen">
@@ -65,7 +89,7 @@ function Favourites() {
               <div>
                 {items.map((item) => (
                   <CartProduct
-                    key={item.id}
+                    key={item.productId}   // ✅ id değil
                     item={item}
                     onIncrease={null}
                     onDecrease={null}
