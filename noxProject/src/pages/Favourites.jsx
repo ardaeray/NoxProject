@@ -4,11 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 
 function Favourites() {
-  
   const navigate = useNavigate();
   const { state } = useContext(AppContext);
 
-  // ✅ EKSİK OLAN STATE
+  //  EKSİK OLAN STATE
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -20,7 +19,7 @@ function Favourites() {
         }
 
         const response = await fetch(
-          `http://localhost:3001/users/${state.user.id}` // ✅ userId değil
+          `http://localhost:3001/users/${state.user.id}` //  userId değil
         );
         const user = await response.json();
 
@@ -31,13 +30,11 @@ function Favourites() {
     };
 
     fetchItems();
-  }, [state.user, state.isAuth, navigate]); // ✅ doğru dependency
+  }, [state.user, state.isAuth, navigate]); //  doğru dependency
 
   const handleRemove = async (item) => {
     try {
-      const res = await fetch(
-        `http://localhost:3001/users/${state.user.id}`
-      );
+      const res = await fetch(`http://localhost:3001/users/${state.user.id}`);
       const user = await res.json();
 
       const updatedFavourites = user.favourites.filter(
@@ -54,9 +51,7 @@ function Favourites() {
         }),
       });
 
-      setItems((prev) =>
-        prev.filter((x) => x.productId !== item.productId)
-      );
+      setItems((prev) => prev.filter((x) => x.productId !== item.productId));
     } catch (error) {
       console.error("Delete error:", error);
     }
@@ -89,7 +84,7 @@ function Favourites() {
               <div>
                 {items.map((item) => (
                   <CartProduct
-                    key={item.productId}   // ✅ id değil
+                    key={item.productId} // id değil
                     item={item}
                     onIncrease={null}
                     onDecrease={null}

@@ -1,107 +1,87 @@
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import noxLogo from "../../public/assets/noxLogoTransparent.png";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
-
-
-
-
 export default function Login() {
-
-const { dispatch } = useContext(AppContext); // burada bize AppContext içindeki providerdan hani state ve dispatch döndürüyoruz ya value kısmında burada istersem const {dispatch,state} = useContext(AppContext); de yazabilirim ama bana dispatch lazım çünkü LOGIN olma durumunda direkt bu eylemin yapılmaısnı istiyorum .
-
-
-
-
-
-
+  const { dispatch } = useContext(AppContext); // burada bize AppContext içindeki providerdan hani state ve dispatch döndürüyoruz ya value kısmında burada istersem const {dispatch,state} = useContext(AppContext); de yazabilirim ama bana dispatch lazım çünkü LOGIN olma durumunda direkt bu eylemin yapılmaısnı istiyorum .
 
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
-  const[mail,setMail] = useState("");
-  const[password,setPassword] = useState("");
-  const[success,setSuccess] = useState(false);
-  const[error,setError] = useState("");
+  const [mail, setMail] = useState("");
+  const [password, setPassword] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/users");
+        const data = await response.json();
 
-    useEffect(() => {
-      const fetchUsers = async () => {
-        try {
-          const response = await fetch("http://localhost:3001/users");
-          const data = await response.json();
-  
-          setUsers(data);
-  
-        } catch (error) {
-          console.log("Data error:", error);
-        }
-      };
-  
-      fetchUsers();
-    }, []);
+        setUsers(data);
+      } catch (error) {
+        console.log("Data error:", error);
+      }
+    };
 
-
+    fetchUsers();
+  }, []);
 
   const decoding = (pass) => {
-
-    pass = pass.substring(Math.floor(pass.length/2),pass.length) + pass.substring(0,Math.floor(pass.length/2))
+    pass =
+      pass.substring(Math.floor(pass.length / 2), pass.length) +
+      pass.substring(0, Math.floor(pass.length / 2));
     return pass;
+  };
 
-  }
+  const login = () => {
+    if (!mail || !password) {
+      // lütfen  şifre ve mail giriniz
 
-const login = () => {
+      setError("Please fill all the blanks!");
+      setMail("");
+      setPassword("");
+      return;
+    }
 
+    const currentUser = users.find((user) => user.mail === mail);
 
-  if(!mail || !password){
-    // lütfen  şifre ve mail giriniz
-
-    setError("Please fill all the blanks!")
-    setMail("");
-    setPassword("");
-    return;
-  }
-
-  const currentUser = users.find(
-          (user) => user.mail === mail
-  );
-
-  if(!currentUser){
+    if (!currentUser) {
       // bu kısım böyle bir mail bulunmuyor
       setError("This mail doesn't exist!");
       return;
-  }
-  
+    }
 
-  if(currentUser.password !== decoding(password)){
-    // şifre yanlış
-    setError("The password is incorrect!");
-    return;
-  }
+    if (currentUser.password !== decoding(password)) {
+      // şifre yanlış
+      setError("The password is incorrect!");
+      return;
+    }
 
-  
-
-  if(currentUser.password === decoding(password)){
-    dispatch({              // login başarılıysa dispatch hangi işlemi yapacağını ayarlıyoruz
-      type: "LOGIN",
+    if (currentUser.password === decoding(password)) {
+      dispatch({
+        // login başarılıysa dispatch hangi işlemi yapacağını ayarlıyoruz
+        type: "LOGIN",
         payload: currentUser,
-    });
+      });
 
-    setSuccess(true);
+      localStorage.setItem(
+        JSON.stringify(currentUser.mail),
+        JSON.stringify(decoding(currentUser.password))
+      );
 
-    setTimeout(() => {navigate("/")}, 1000);
+      setSuccess(true);
 
-  }
-  
-  // (currentUser.password === decoding(password)) && setSuccess(true); setTimeout(() => {navigate("/")}, 1000);  knk bunun içine entegre edemedim o yüzden aynısını daha açık yazdım
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    }
 
-
-}
-
-
-
+    // (currentUser.password === decoding(password)) && setSuccess(true); setTimeout(() => {navigate("/")}, 1000);  knk bunun içine entegre edemedim o yüzden aynısını daha açık yazdım
+  };
 
   return (
     <main className="h-screen flex items-center justify-center bg-gradient-to-br from-black via-neutral-900 to-black px-6">
@@ -126,7 +106,8 @@ const login = () => {
         </div>
 
         {/* FORM */}
-        <form className="space-y-5"
+        <form
+          className="space-y-5"
           onSubmit={(e) => {
             e.preventDefault();
             login();
@@ -148,9 +129,7 @@ const login = () => {
             className="w-full rounded-lg bg-neutral-800 border border-neutral-700 px-4 py-3 text-sm text-white placeholder-neutral-100 focus:outline-none focus:border-black"
           />
 
-          {error && (
-            <p className="text-red-400 text-sm">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-sm">{error}</p>}
 
           {!success ? (
             <button

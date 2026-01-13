@@ -1,41 +1,41 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import noxLogo from "../../public/assets/noxLogoTransparent.png";
 import { useState } from "react";
 import { AppContext } from "../context/AppContext";
 
 function Header() {
-  const { state,dispatch } = useContext(AppContext);
-  
+  const { state, dispatch } = useContext(AppContext);
 
-  const[logOut,setLogOut] = useState(false);
+  const navigate = useNavigate();
 
- let checkLogOut  = () => {
-        dispatch({
-        type: "LOGIN",
-        payload: {
-             user: null,
-             cart: [],
-             favourites: [],
-             isAuth: false,
-        },
+  const [logOut, setLogOut] = useState(false);
+
+  let checkLogOut = () => {
+    dispatch({
+      type: "LOGIN",
+      payload: {
+        user: null,
+        cart: [],
+        favourites: [],
+        isAuth: false,
+      },
     });
-  }
+  };
 
   const menuItems = [
-
     { label: "📱 NoxPhone", to: "/noxPhone" },
     { label: "💻 NoxBook", to: "/noxBook" },
     { label: "⌚️ NoxWatch", to: "/noxWatch" },
     { label: "🎧 NoxBuds", to: "/noxBuds" },
     { label: "🖥️ NoxView", to: "/noxView" },
     { label: "About Us", to: "/about" },
-   state.isAuth && { label: "👜 Cart", to: "/cart" },
-   state.isAuth && { label: "❤️ Favourites", to: "/favourites" },
-   !state.isAuth && { label: "Log In", to: "/login" },
-   state.isAuth && { label: "Log Out", to: "#" },
-  !state.isAuth && { label: "Sign Up", to: "/signup" },
-  ];
+    state.isAuth && { label: "👜 Cart", to: "/cart" },
+    state.isAuth && { label: "❤️ Favourites", to: "/favourites" },
+    !state.isAuth && { label: "Log In", to: "/login" },
+    !state.isAuth && { label: "Sign Up", to: "/signup" },
+    state.isAuth && { label: "Log Out", action: "logout" },
+  ].filter(Boolean);
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -55,19 +55,30 @@ function Header() {
           </li>
 
           {/* Middle Navbar Links */}
-          <li
-            className="
-              hidden lg:flex justify-center gap-3 lg:gap-6 whitespace-nowrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {menuItems.map((item) => (
-              <Link
-                key={item.label}
-                to={item.to}
-                className="text-white hover:text-gray-500 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
+          <li className="hidden lg:flex absolute left-1/2 -translate-x-1/2 gap-6 whitespace-nowrap">
+            {menuItems.map((item) =>
+              item.action === "logout" ? (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    localStorage.clear(); // veya removeItem("auth")
+                    dispatch({ type: "LOGOUT" }); // Context varsa
+                    navigate("/", { replace: true }); // hard reset (opsiyonel)
+                  }}
+                  className="text-white hover:text-gray-500 transition-colors"
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  className="text-white hover:text-gray-500 transition-colors"
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </li>
 
           {/* Hamburger Button For Mobile */}
@@ -82,17 +93,31 @@ function Header() {
       {mobileOpen && (
         <div className="lg:hidden bg-black border-t border-gray-800">
           <ul className="flex flex-col px-6 py-4 gap-4">
-            {menuItems.map((item) => (
-              <Link
-                key={item.label}
-                to={item.to}
-                onClick={() => setMobileOpen(false)}
-                className="text-white hover:text-gray-400 transition-colors"
-                onDoubleClick = {() => checkLogOut}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {menuItems.map((item) =>
+              item.action === "logout" ? (
+                <button
+                  key={item.label}
+                  onClick={() => {
+                    localStorage.clear();
+                    dispatch({ type: "LOGOUT" });
+                    setMobileOpen(false);
+                    navigate("/", { replace: true });
+                  }}
+                  className="text-white hover:text-gray-400 transition-colors text-left"
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-white hover:text-gray-400 transition-colors"
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </ul>
         </div>
       )}

@@ -3,7 +3,6 @@ import noxLogo from "../../public/assets/noxLogoTransparent.png";
 import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
-
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
@@ -12,7 +11,6 @@ export default function Signup() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -20,7 +18,6 @@ export default function Signup() {
         const data = await response.json();
 
         setUsers(data);
-
       } catch (error) {
         console.log("Data error:", error);
       }
@@ -29,50 +26,39 @@ export default function Signup() {
     fetchUsers();
   }, []);
 
+  const addUser = async () => {
+    await fetch("http://localhost:3001/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mail: mail,
+        password: encoding(password),
+        isAuth: false,
+      }),
+    });
+  };
 
- const addUser = async () =>{
-          await fetch("http://localhost:3001/users", {                  
-            method: "POST",                               
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(
-              {
-              mail: mail,
-              password: encoding(password), 
-              isAuth: false
-          }
-            ),                            
-          })
-    };
-
-
-
-
-
-
-const encoding = (pass) => {
-
-  pass = pass.substring(Math.floor(pass.length/2),pass.length) + pass.substring(0,Math.floor(pass.length/2))
+  const encoding = (pass) => {
+    pass =
+      pass.substring(Math.floor(pass.length / 2), pass.length) +
+      pass.substring(0, Math.floor(pass.length / 2));
     return pass;
-
- }
+  };
 
   const signup = () => {
     setError("");
 
     if (!mail || !password) {
-      setError("Email ve şifre zorunludur.");
+      setMail("");
+      setPassword("");
+      setError("Fill all the blanks!");
       return;
     }
 
-    const exists = users.some(
-          (user) => user.mail === mail
-    );
-
-    
-
+    const exists = users.some((user) => user.mail === mail);
 
     if (exists) {
-      setError("Bu email zaten kayıtlı.");
+      setError("This email already exists!");
       setSuccess(false);
       return;
     }
@@ -83,13 +69,11 @@ const encoding = (pass) => {
     setPassword("");
     setTimeout(() => setSuccess(false), 1000);
     setTimeout(() => navigate("/login"), 1000);
-
   };
 
   return (
     <main className="h-screen flex items-center justify-center bg-gradient-to-br from-black via-neutral-900 to-black px-6">
       <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl p-10 shadow-xl">
-        
         {/* LOGO */}
         <div className="flex justify-start mb-6">
           <img src={noxLogo} alt="Nox Logo" className="h-10 opacity-90" />
@@ -129,9 +113,7 @@ const encoding = (pass) => {
             className="w-full rounded-lg bg-neutral-800 border border-neutral-700 px-4 py-3 text-sm text-white placeholder-neutral-400 focus:outline-none"
           />
 
-          {error && (
-            <p className="text-red-400 text-sm">{error}</p>
-          )}
+          {error && <p className="text-red-400 text-sm">{error}</p>}
 
           {!success ? (
             <button
