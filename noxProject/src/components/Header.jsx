@@ -21,6 +21,7 @@ function Header() {
         isAuth: false,
       },
     });
+     localStorage.removeItem("appState");
   };
 
   const menuItems = [

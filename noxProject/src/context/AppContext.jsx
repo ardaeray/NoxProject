@@ -2,10 +2,11 @@ import { createContext, useReducer, useEffect } from "react";
 
 export const AppContext = createContext(); // uygulama içinde paylaşılacak bir kanal oluşturmak için.
 
-const savedState = JSON.parse(localStorage.getItem("appState")); // başlangıç state i her şey boş oluyor. eğer bir user ile eşleşirse o zaman state i değiştir diyip bunların içini dolduracaz.
+const savedState = localStorage.getItem("appState"); // başlangıç state i her şey boş oluyor. eğer bir user ile eşleşirse o zaman state i değiştir diyip bunların içini dolduracaz.
 
-const initialState = savedState || {
-  userId: null,
+
+const initialState = savedState ? JSON.parse(savedState) : {
+  userId:  null,
   user: null,
   cart: [],
   favourites: [],

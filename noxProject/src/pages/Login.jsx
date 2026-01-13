@@ -68,9 +68,12 @@ export default function Login() {
         payload: currentUser,
       });
 
+
+      currentUser.isAuth = true;
+      
       localStorage.setItem(
-        JSON.stringify(currentUser.mail),
-        JSON.stringify(decoding(currentUser.password))
+       "appState",
+        JSON.stringify(currentUser)
       );
 
       setSuccess(true);
