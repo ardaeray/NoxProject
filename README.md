@@ -1,5 +1,7 @@
 # NOX Project
 
+GitHub Repository Link: https://github.com/ardaeray/NoxProject
+
 NOX Project is a frontend-focused web application developed as part of a Web Programming course.  
 It represents a modern e-commerce / product ecosystem demo built using React and related technologies.
 
