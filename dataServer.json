@@ -47,58 +47,12 @@
       "favourites": []
     },
     {
-      "id": "08e6",
-      "mail": "a@mm.com",
-      "password": "1",
-      "isAuth": false,
-      "cart": [],
-      "favourites": []
-    },
-    {
       "id": "61f9",
       "mail": "230408051@st.biruni.edu.tr",
       "password": "asdasd",
       "isAuth": false,
       "cart": [],
       "favourites": []
-    },
-    {
-      "id": "ef2c",
-      "mail": "ozden@gmail.com",
-      "password": "skimarda",
-      "isAuth": false,
-      "cart": [
-        {
-          "productId": 5,
-          "productName": "NOX One Pro",
-          "productPrice": 1099,
-          "productImg": "../../public/assets/NoxOnePro.png",
-          "quantity": 1
-        },
-        {
-          "productId": 8,
-          "productName": "NOX Time Ultra",
-          "productPrice": 599,
-          "productImg": "../../public/assets/NoxTimeUltra.png",
-          "quantity": 1
-        },
-        {
-          "productId": 14,
-          "productName": "NOX View Studio",
-          "productPrice": 1499,
-          "productImg": "../../public/assets/NoxViewStudio.png",
-          "quantity": 1
-        }
-      ],
-      "favourites": [
-        {
-          "productId": 3,
-          "productName": "NOX Book Air",
-          "productPrice": 999,
-          "productImg": "../../public/assets/NoxBookAir.png",
-          "quantity": 1
-        }
-      ]
     }
   ],
   "products": [
