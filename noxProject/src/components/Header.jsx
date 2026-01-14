@@ -11,17 +11,28 @@ function Header() {
 
   const [logOut, setLogOut] = useState(false);
 
-  let checkLogOut = () => {
-    dispatch({
-      type: "LOGIN",
-      payload: {
-        user: null,
-        cart: [],
-        favourites: [],
-        isAuth: false,
-      },
-    });
-     localStorage.removeItem("appState");
+  let checkLogOut = async () => {
+    try {
+      // serverdaki user'i kapat
+      if (state.userId) {
+        await fetch(`http://localhost:3001/users/${state.userId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isAuth: false }),
+        });
+      }
+    } catch (err) {
+      console.log("Logout patch failed:", err);
+    } finally {
+      // UI state reset
+      dispatch({ type: "LOGOUT" });
+
+      // sadece appState temizle (clear değil)
+      localStorage.removeItem("appState");
+
+      // yönlendirme
+      navigate("/", { replace: true });
+    }
   };
 
   const menuItems = [
@@ -61,11 +72,7 @@ function Header() {
               item.action === "logout" ? (
                 <button
                   key={item.label}
-                  onClick={() => {
-                    localStorage.clear(); // veya removeItem("auth")
-                    dispatch({ type: "LOGOUT" }); // Context varsa
-                    navigate("/", { replace: true }); // hard reset (opsiyonel)
-                  }}
+                  onClick={checkLogOut}
                   className="text-white hover:text-gray-500 transition-colors"
                 >
                   {item.label}

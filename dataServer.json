@@ -12,15 +12,37 @@
           "productPrice": 399,
           "productImg": "../../public/assets/NoxTime.png",
           "quantity": 11
+        },
+        {
+          "productId": 1,
+          "productName": "NOX Book",
+          "productPrice": 1299,
+          "productImg": "../../public/assets/NoxBook.png",
+          "quantity": 1
+        },
+        {
+          "productId": 4,
+          "productName": "NOX One",
+          "productPrice": 899,
+          "productImg": "../../public/assets/NoxOne.png",
+          "quantity": 1
         }
       ],
-      "favourites": []
+      "favourites": [
+        {
+          "productId": 2,
+          "productName": "NOX Book Pro",
+          "productPrice": 1899,
+          "productImg": "../../public/assets/NoxBookPro.png",
+          "quantity": 1
+        }
+      ]
     },
     {
       "id": "7c5f",
       "mail": "arda@gmail.com",
       "password": "231",
-      "isAuth": false,
+      "isAuth": true,
       "cart": [
         {
           "productId": 1,
@@ -44,7 +66,36 @@
           "quantity": 4
         }
       ],
-      "favourites": []
+      "favourites": [
+        {
+          "productId": 1,
+          "productName": "NOX Book",
+          "productPrice": 1299,
+          "productImg": "../../public/assets/NoxBook.png",
+          "quantity": 1
+        },
+        {
+          "productId": 10,
+          "productName": "NOX Void",
+          "productPrice": 229,
+          "productImg": "../../public/assets/NoxVoid.png",
+          "quantity": 1
+        },
+        {
+          "productId": 9,
+          "productName": "NOX Time Active",
+          "productPrice": 349,
+          "productImg": "../../public/assets/NoxTimeActive.png",
+          "quantity": 1
+        },
+        {
+          "productId": 7,
+          "productName": "NOX Time",
+          "productPrice": 399,
+          "productImg": "../../public/assets/NoxTime.png",
+          "quantity": 1
+        }
+      ]
     },
     {
       "id": "61f9",
@@ -53,6 +104,22 @@
       "isAuth": false,
       "cart": [],
       "favourites": []
+    },
+    {
+      "id": "e7a5",
+      "mail": "ali@gmail.com",
+      "password": "123ali",
+      "cart": [
+        {
+          "productId": 1,
+          "productName": "NOX Book",
+          "productPrice": 1299,
+          "productImg": "../../public/assets/NoxBook.png",
+          "quantity": 1
+        }
+      ],
+      "favourites": [],
+      "isAuth": false
     }
   ],
   "products": [

@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import noxLogo from "../../public/assets/noxLogoTransparent.png";
-import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
 export default function Login() {
-  const { dispatch } = useContext(AppContext); // burada bize AppContext içindeki providerdan hani state ve dispatch döndürüyoruz ya value kısmında burada istersem const {dispatch,state} = useContext(AppContext); de yazabilirim ama bana dispatch lazım çünkü LOGIN olma durumunda direkt bu eylemin yapılmaısnı istiyorum .
-
+  const { dispatch } = useContext(AppContext);
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
@@ -20,10 +18,9 @@ export default function Login() {
       try {
         const response = await fetch("http://localhost:3001/users");
         const data = await response.json();
-
         setUsers(data);
-      } catch (error) {
-        console.log("Data error:", error);
+      } catch (err) {
+        console.log("Data error:", err);
       }
     };
 
@@ -31,16 +28,16 @@ export default function Login() {
   }, []);
 
   const decoding = (pass) => {
-    pass =
+    return (
       pass.substring(Math.floor(pass.length / 2), pass.length) +
-      pass.substring(0, Math.floor(pass.length / 2));
-    return pass;
+      pass.substring(0, Math.floor(pass.length / 2))
+    );
   };
 
-  const login = () => {
-    if (!mail || !password) {
-      // lütfen  şifre ve mail giriniz
+  const login = async () => {
+    setError("");
 
+    if (!mail || !password) {
       setError("Please fill all the blanks!");
       setMail("");
       setPassword("");
@@ -50,46 +47,42 @@ export default function Login() {
     const currentUser = users.find((user) => user.mail === mail);
 
     if (!currentUser) {
-      // bu kısım böyle bir mail bulunmuyor
       setError("This mail doesn't exist!");
       return;
     }
 
     if (currentUser.password !== decoding(password)) {
-      // şifre yanlış
       setError("The password is incorrect!");
       return;
     }
 
-    if (currentUser.password === decoding(password)) {
-      dispatch({
-        // login başarılıysa dispatch hangi işlemi yapacağını ayarlıyoruz
-        type: "LOGIN",
-        payload: currentUser,
+    try {
+      // 1) Server: isAuth true
+      await fetch(`http://localhost:3001/users/${currentUser.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isAuth: true }),
       });
 
+      // 2) UI: context state update
+      dispatch({
+        type: "LOGIN",
+        payload: { ...currentUser, isAuth: true },
+      });
 
-      currentUser.isAuth = true;
-      
-      localStorage.setItem(
-       "appState",
-        JSON.stringify(currentUser)
-      );
-
+      // 3) localStorage: ELLE YAZMA. AppContext zaten state'i yazıyor.
       setSuccess(true);
 
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      setTimeout(() => navigate("/"), 1000);
+    } catch (err) {
+      console.log(err);
+      setError("Login failed. Please try again.");
     }
-
-    // (currentUser.password === decoding(password)) && setSuccess(true); setTimeout(() => {navigate("/")}, 1000);  knk bunun içine entegre edemedim o yüzden aynısını daha açık yazdım
   };
 
   return (
     <main className="h-screen flex items-center justify-center bg-gradient-to-br from-black via-neutral-900 to-black px-6">
       <div className="w-full max-w-md bg-gradient-to-br from-neutral-900 via-neutral-900 to-neutral-900 border border-neutral-800 rounded-2xl p-10 shadow-xl">
-        {/* LOGO */}
         <div className="flex mx-auto left mb-6 pl-1">
           <img
             src={noxLogo}
@@ -98,7 +91,6 @@ export default function Login() {
           />
         </div>
 
-        {/* HEADER */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-white mb-2 text-left">
             Log-in to your account
@@ -108,7 +100,6 @@ export default function Login() {
           </p>
         </div>
 
-        {/* FORM */}
         <form
           className="space-y-5"
           onSubmit={(e) => {
@@ -148,7 +139,6 @@ export default function Login() {
           )}
         </form>
 
-        {/* FOOTER */}
         <p className="mt-8 text-center text-sm text-neutral-400 float-right pr-1">
           You don't have an account?
           <a

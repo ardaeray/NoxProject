@@ -4,15 +4,15 @@ export const AppContext = createContext(); // uygulama içinde paylaşılacak bi
 
 const savedState = localStorage.getItem("appState"); // başlangıç state i her şey boş oluyor. eğer bir user ile eşleşirse o zaman state i değiştir diyip bunların içini dolduracaz.
 
-
-const initialState = savedState ? JSON.parse(savedState) : {
-  userId:  null,
-  user: null,
-  cart: [],
-  favourites: [],
-  isAuth: false,
-};
-
+const initialState = savedState
+  ? JSON.parse(savedState)
+  : {
+      userId: null,
+      user: null,
+      cart: [],
+      favourites: [],
+      isAuth: false,
+    };
 
 // function reducer(state, action) {     // reducer dispatch in getirdiği action ı alır ve mevcut state i alıp action ile o state üzerinde yeni değişikliği yapıp geri state i döndürür.
 //   switch (action.type) {
@@ -29,6 +29,7 @@ function reducer(state, action) {
       };
     case "LOGOUT":
       return {
+        userId: null,
         user: null,
         cart: [],
         favourites: [],

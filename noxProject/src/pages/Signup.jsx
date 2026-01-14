@@ -33,6 +33,8 @@ export default function Signup() {
       body: JSON.stringify({
         mail: mail,
         password: encoding(password),
+        cart: [],
+        favourites: [],
         isAuth: false,
       }),
     });
